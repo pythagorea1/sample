@@ -7,7 +7,6 @@ class ContentofMessage
 		@msg = msg
 	end
 	def content()
-		if(@msg == "ボルト")
 		res = text();
 		if (res[0]==1)
 		return {
@@ -22,8 +21,97 @@ class ContentofMessage
 			originalContentUrl:res[2],
 			previewImageUrl:res[3]
 		}
+		else if(res[0]==3)
+		return {
+			contentType:3,
+			toType:1,
+			originalContentUrl:res[2],
+			previewImageUrl:res[3]
+		}
+		else if(res[0]==4)
+		return {
+			contentType:4,
+			toType:1,
+			originalContentUrl:res[2],
+			contentMetadata:{
+			AUDLEN:res[3]
+		}
+		else if(res[0]==7)
+		return {
+			contentType:7,
+			toType:1,
+			location:{
+			title:res[2],
+			latitude:res[3],
+			longitude:res[4]
+		}
+		else if(res[0]==8) #sticker
+		return {
+			contentType:8,
+			toType:1,
+			contentMetadata:{
+			STKID:res[1],
+			STKPKGID:res[2],
+			STKVER:res[3]
+		}
+		}
 		else
-		
+		{
+			canvas: {
+			width: 1040,
+			height: 1040,
+			initialScene: "scene1"
+			},
+			images: {
+			image1: {
+				x: 0,
+				y: 0,
+				w: 1040,
+				h: 1040
+				}
+			},
+			actions: {
+			openHomepage: {
+			type: "web",
+		text: "Open our homepage.",
+		params: {
+			linkUri: "http://google.com/"
+			}
+		},
+		sayHello: {
+		type: "sendMessage",
+		text: "Say hello.",
+		params: {
+			text: "Hello, Brown!"
+			}
+		}
+	},
+		scenes: {
+		scene1: {
+		draws: [
+        {
+          image: "image1",
+          x: 0,
+          y: 0,
+          w: 1040,
+          h: 1040
+        }
+		],
+		listeners: [
+        {
+          type: "touch",
+          params: [0, 0, 1040, 350],
+          action: "openHomepage"
+        },
+        {
+          type: "touch",
+          params: [0, 350, 1040, 350],
+          action: "sayHello"
+        }
+      ]
+    }
+  }
+}
 		end
 		
 	def text()
@@ -39,6 +127,10 @@ class ContentofMessage
 			when "ボルト"
 				return [2,originalContentUrl:"https://i.ytimg.com/vi/qS0OLh8UrZk/maxresdefault.jpg",
 			previewImageUrl:"https://i.ytimg.com/vi/qS0OLh8UrZk/maxresdefault.jpg"]
+			when "世田谷公園"
+				return [7,"世田谷公園",35.6443926,139.6810879]
+			when "スティッカー"
+				return [8,"3","332","100"]
 			else
 				return [1,"あって打ってください"]
 			end
